@@ -1,3 +1,4 @@
+const generarEmojiAleatorio = require("../../utils/emogisRandom");
 const MetaWhatsApp = require("./classMetaWhatsApp");
 const Boom = require(`@hapi/boom`)
 const WhatsApp = new MetaWhatsApp()
@@ -37,6 +38,24 @@ const repitMessage = async (body) => {
         throw error
     }
 }
+
+
+const messageDefault = async (body) => {
+    try {
+        let phone_number_id = body.entry[0].changes[0].value.metadata.phone_number_id;
+        let from = body.entry[0].changes[0].value.messages[0].from; // extract the phone number from the webhook payload
+        const emoji = generarEmojiAleatorio()
+        const msg_body = `${emoji} Este chat es solo para confirmar el pedido. \n Si deseas hablar con alguien puedes hacerlo por este otro chat +57 350 6186772`
+        
+
+        const rta = await WhatsApp.sendText(phone_number_id, from, msg_body);
+        return rta
+
+    } catch (error) {
+        throw error
+    }
+}
+
 
 
 
@@ -94,6 +113,7 @@ const eviarPlantillaConfirmacion = async (data) => {
 module.exports = {
     verifyToken,
     repitMessage,
+    messageDefault,
     isMessageValid,
     isButtonValid,
     recoletDataButtonConfirmar,

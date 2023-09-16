@@ -40,7 +40,9 @@ routes.post("/webhook", async (req, res, next) => {
 
         if (!isButton) {
             //mandamos el mensage por defecto o no mandamos nada
-            const rta = await controlleW.repitMessage(body)
+
+            // const rta = await controlleW.repitMessage(body)
+            const rta = await controlleW.messageDefault(body)
             res.sendStatus(200)
             return
         }

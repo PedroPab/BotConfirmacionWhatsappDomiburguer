@@ -1,0 +1,11 @@
+runtime: nodejs18
+
+service: gestordeconfirmacion
+
+
+automatic_scaling:
+  min_instances: 1
+
+handlers:
+- url: /.*
+  script: auto
