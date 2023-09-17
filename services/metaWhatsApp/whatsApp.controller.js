@@ -1,4 +1,5 @@
 const generarEmojiAleatorio = require("../../utils/emogisRandom");
+const consultarPedidoIdButton = require("../../utils/pedidoConfirmado");
 const MetaWhatsApp = require("./classMetaWhatsApp");
 const Boom = require(`@hapi/boom`)
 const WhatsApp = new MetaWhatsApp()
@@ -46,7 +47,6 @@ const messageDefault = async (body) => {
         let from = body.entry[0].changes[0].value.messages[0].from; // extract the phone number from the webhook payload
         const emoji = generarEmojiAleatorio()
         const msg_body = `${emoji} Este chat es solo para confirmar el pedido. \n Si deseas hablar con alguien puedes hacerlo por este otro chat +57 350 6186772`
-        
 
         const rta = await WhatsApp.sendText(phone_number_id, from, msg_body);
         return rta
@@ -109,6 +109,67 @@ const eviarPlantillaConfirmacion = async (data) => {
 }
 
 
+const madarRespuestaConfirmaicon = async (body) => {
+    try {
+
+        // recogemos el id del bon y el numero de telefo
+        const { clientPhone, idButtonContext } = recoletDataButtonConfirmar(body)
+        console.log("🚀 ~ file: whatsApp.controller.js:117 ~ madarRespuestaConfirmaicon ~ idButtonContext:", idButtonContext)
+
+        //consultamos cual es el pedido del cliete segun el idButoon
+        //se confirma de uan vez el pedido
+        const pedido = await consultarPedidoIdButton(idButtonContext)
+
+        //mandamos mensaje de listo 
+        const msg_body = `listo tu pedido se confirmo con exito, ${pedido.body.id}`
+        const message = await WhatsApp.sendText(undefined, pedido.body.phone, msg_body);
+
+        return
+
+    } catch (error) {
+        throw error
+    }
+}
+
+
+
+
+const gestionarEntradaDeMensages = async (body) => {
+    try {
+        //derminas si es la respuesta de un texto  y es valdio
+        const isValid = isMessageValid(body)
+
+        if (!isValid) {
+            console.log(`no es un mensage valido`)
+
+            return 'no es un mensage valido'
+        }
+
+        console.log("body post webhook", JSON.stringify(body, null, 2))
+
+
+        //miramos si es un boton  de ruesta
+        const isButton = isButtonValid(body)
+
+        if (!isButton) {
+            //mandamos el mensage por defecto o no mandamos nada
+            const rta = await messageDefault(body)
+            return rta
+        }
+
+        // se precion el botn de confirmacion
+
+        //mandamos los datos del pedido
+        const mensageConfirmado = await madarRespuestaConfirmaicon(body)
+
+        return
+    } catch (error) {
+        throw error
+    }
+}
+
+
+
 
 module.exports = {
     verifyToken,
@@ -118,4 +179,5 @@ module.exports = {
     isButtonValid,
     recoletDataButtonConfirmar,
     eviarPlantillaConfirmacion,
+    gestionarEntradaDeMensages,
 }

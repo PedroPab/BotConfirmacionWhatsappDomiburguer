@@ -23,38 +23,9 @@ routes.post("/webhook", async (req, res, next) => {
 
         let body = req.body;
 
-        //derminas si es la respuesta de un texto  y es valdio
-        const isValid = controlleW.isMessageValid(body)
+        const rta = await controlleW.gestionarEntradaDeMensages(body)
 
-        if (!isValid) {
-            console.log(`no es un mensage valido`)
-            res.sendStatus(200)
-            return
-        }
-
-        console.log("body post webhook", JSON.stringify(body, null, 2))
-
-
-        //miramos si es un boton  de ruesta
-        const isButton = controlleW.isButtonValid(body)
-
-        if (!isButton) {
-            //mandamos el mensage por defecto o no mandamos nada
-
-            // const rta = await controlleW.repitMessage(body)
-            const rta = await controlleW.messageDefault(body)
-            res.sendStatus(200)
-            return
-        }
-
-        // se precion el botn de confirmacion
-        // recogemos el id del bon y el numero de telefo
-        const { clientPhone, idButtonContext } = controlleW.recoletDataButtonConfirmar(body)
-        console.log("🚀 ~ file: rutas.js:44 ~ routes.post ~ clientPhone, idButtonContext:", clientPhone, idButtonContext)
-        //mandamos un mensage de gracias
-        
-
-        res.sendStatus(201)
+        res.status(200).json(rta)
 
     } catch (error) {
         console.error(error);
@@ -70,7 +41,7 @@ routes.post(`/plantillaConfirmacion`, async (req, res, next) => {
         const envioPlantilla = await controlleW.eviarPlantillaConfirmacion(body)
         console.log("🚀 ~ file: rutas.js:63 ~ routes.post ~ envioPlantilla:", envioPlantilla)
 
-        res.send(`ok`)
+        res.json({ idButton: envioPlantilla })
 
     } catch (error) {
         console.error(error);
