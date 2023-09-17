@@ -1,5 +1,5 @@
-const generarEmojiAleatorio = require("../../utils/emogisRandom");
-const consultarPedidoIdButton = require("../../utils/pedidoConfirmado");
+const generarEmojiAleatorio = require("../../network/utils/emogisRandom");
+const consultarPedidoIdButton = require("../../network/utils/pedidoConfirmado");
 const MetaWhatsApp = require("./classMetaWhatsApp");
 const Boom = require(`@hapi/boom`)
 const WhatsApp = new MetaWhatsApp()

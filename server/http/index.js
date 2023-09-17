@@ -1,9 +1,10 @@
 const express = require('express')
 const routes = require(`./routes/rutas`)
+const { PORT } = require(`./../../network/confDotenv`)
 
 
 class httpServer {
-    PORT = process.env.PORT
+    PORT = PORT
     app
     constructor() { }
 

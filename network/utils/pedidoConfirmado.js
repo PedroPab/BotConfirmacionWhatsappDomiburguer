@@ -1,10 +1,14 @@
+const { URL_WEBHOOK_CONFIRMACION } = require(`./../confDotenv`)
+
 async function consultarPedidoIdButton(idButton) {
     try {
         const body = {
             idButton
         }
 
-        const url = `http://localhost:8087/api/pedidos/pedidoConfirmado`
+        const url = `${URL_WEBHOOK_CONFIRMACION}/api/pedidos/pedidoConfirmado`
+        console.log("🚀 ~ file: pedidoConfirmado.js:11 ~ consultarPedidoIdButton ~ url:", url)
+
         const options = {
             method: "POST",
             headers: {

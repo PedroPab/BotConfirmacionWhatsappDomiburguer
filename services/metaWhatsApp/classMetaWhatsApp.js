@@ -1,9 +1,10 @@
+const ENV = require(`./../../network/confDotenv`)
 
 
 class MetaWhatsApp {
-    token = process.env.JWT_TOKEN;
-    phone_number_id = process.env.NUMBER_ID;
-    verify_token = process.env.VERIFY_TOKEN;
+    token = ENV.JWT_TOKEN;
+    phone_number_id = ENV.NUMBER_ID;
+    verify_token = ENV.VERIFY_TOKEN;
     version = `17.0`
 
     URL_API = `https://graph.facebook.com/v${this.version}`
