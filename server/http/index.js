@@ -13,7 +13,7 @@ class httpServer {
     buildApp = () => {
         
         const handleErrors = (err, req, res, next) => {
-            console.error(err.stack);
+            console.error(`err: ${err}`);
             res.status(500).send('Something went wrong!');
         }
 

@@ -49,7 +49,7 @@ const messageDefault = async (body) => {
         const emoji = generarEmojiAleatorio()
         const msg_body = `${emoji} Este chat es solo para confirmar el pedido. \n Si deseas hablar con alguien puedes hacerlo por este otro chat`
 
-        const rta = await WhatsApp.sendText(phone_number_id, from, msg_body);
+        const rta = await WhatsApp.sendText({ phone_number_id, from, msg_body });
         const messageContac = await WhatsApp.sendContac({ from: from })
         return rta
 
@@ -113,15 +113,14 @@ const eviarPlantillaConfirmacion = async (data) => {
 
 const madarRespuestaConfirmaicon = async (body) => {
     try {
-
         // recogemos el id del bon y el numero de telefo
-        const { clientPhone, idButtonContext } = recoletDataButtonConfirmar(body)
-        console.log("🚀 ~ file: whatsApp.controller.js:117 ~ madarRespuestaConfirmaicon ~ idButtonContext:", idButtonContext)
-
+        const { idButtonContext } = recoletDataButtonConfirmar(body)
+        console.log(`[madarRespuestaConfirmaicon] el id del boton es ${idButtonContext}`);
         //consultamos cual es el pedido del cliete segun el idButoon
         //se confirma de uan vez el pedido
         const pedido = await consultarPedidoIdButton(idButtonContext)
 
+        if (!pedido?.body?.id) throw `no hay un pedido regisrtrso a este boton`
         //mandamos mensaje de listo 
         await mandarMensageListo(pedido);
 
@@ -133,19 +132,42 @@ const madarRespuestaConfirmaicon = async (body) => {
 }
 
 async function mandarMensageListo(pedido) {
-    console.log(`mandando mensage de confirmacion lista`)
+    try {
+        console.log(`mandando mensage de confirmacion lista`)
 
-    const emoji = generarEmojiAleatorio();
-    const msg_body = `${emoji} listo, tu pedido se confirmo con exito`;
-    const message = await WhatsApp.sendText({ from: pedido.body.phone, msg_body });
+        const emoji = generarEmojiAleatorio();
+        const msg_body = `${emoji} listo, tu pedido se confirmo con exito`;
+        console.log("🚀 ~ file: whatsApp.controller.js:141 ~ mandarMensageListo ~ pedido.body.phone:", pedido.body)
 
-    const emoji2 = generarEmojiAleatorio();
-    const msg_body2 = `${emoji} Puedes hacer seguimiento de tu pedido por medio de este enlace `;
-    const button = `${URL_WEBHOOK_CONFIRMACION}/miPedido?idPedido=${pedido.body.id}`
-    const message2 = await WhatsApp.sendText({ from: pedido.body.phone, msg_body: msg_body2 });
-    const message3Url = await WhatsApp.sendUrlPreview({ from: pedido.body.phone, msg_body2, urlMessage: button })
+        console.log("🚀 ~ file: whatsApp.controller.js:141 ~ mandarMensageListo ~ pedido.body.phone:", pedido.body.phone)
 
+        const message = await WhatsApp.sendText({ from: pedido.body.phone, msg_body });
+
+        const emoji2 = generarEmojiAleatorio();
+        const msg_body2 = `${emoji} Puedes hacer seguimiento de tu pedido por medio de este enlace `;
+        const button = `${URL_WEBHOOK_CONFIRMACION}/miPedido?idPedido=${pedido.body.id}`
+        const message2 = await WhatsApp.sendText({ from: pedido.body.phone, msg_body: msg_body2 });
+        const message3Url = await WhatsApp.sendUrlPreview({ from: pedido.body.phone, msg_body2, urlMessage: button })
+
+    } catch (error) {
+        throw error
+    }
 }
+
+async function mandarMensageApi({ phone, text }) {
+    try {
+        console.log(`mandando mensage de mandarMensageApi`)
+
+        const msg_body = `${text}`;
+
+        const message = await WhatsApp.sendText({ from: phone, msg_body });
+
+        return message
+    } catch (error) {
+        throw Boom.badRequest(`no se pudo mandar el mensage`)
+    }
+}
+
 
 
 const gestionarEntradaDeMensages = async (body) => {
@@ -154,9 +176,8 @@ const gestionarEntradaDeMensages = async (body) => {
         const isValid = isMessageValid(body)
 
         if (!isValid) {
-            console.log(`no es un mensage valido`)
-
-            return 'no es un mensage valido'
+            // console.log(`no es un mensage valido`)
+            throw 'no es un mensage valido'
         }
 
         console.log("body post webhook", JSON.stringify(body, null, 2))
@@ -193,6 +214,7 @@ module.exports = {
     isButtonValid,
     recoletDataButtonConfirmar,
     eviarPlantillaConfirmacion,
+    mandarMensageApi,
     gestionarEntradaDeMensages,
 }
 

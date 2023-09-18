@@ -7,7 +7,6 @@ async function consultarPedidoIdButton(idButton) {
         }
 
         const url = `${URL_WEBHOOK_CONFIRMACION}/api/pedidos/pedidoConfirmado`
-        console.log("🚀 ~ file: pedidoConfirmado.js:11 ~ consultarPedidoIdButton ~ url:", url)
 
         const options = {
             method: "POST",
