@@ -13,7 +13,7 @@ class MetaWhatsApp {
 
     }
 
-    async sendText(phone_number_id = this.phone_number_id, from, msg_body) {
+    async sendText({phone_number_id = this.phone_number_id, from, msg_body}) {
         try {
             console.log(`[sendText]  phone_number_id ${phone_number_id} from ${from} text ${msg_body}`);
             const url = `${this.URL_API}/${phone_number_id}/messages`
@@ -81,7 +81,7 @@ class MetaWhatsApp {
             throw error
         }
     }
-    async sendTextButton(phone_number_id = this.phone_number_id, from, msg_body, actionButton) {
+    async sendTextButton({phone_number_id = this.phone_number_id, from, msg_body, actionButton}) {
         try {
             console.log(`[sendTextButton]  phone_number_id ${phone_number_id} from ${from} text ${msg_body}`);
             const url = `${this.URL_API}/${phone_number_id}/messages`;

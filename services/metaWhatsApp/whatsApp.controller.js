@@ -137,12 +137,12 @@ async function mandarMensageListo(pedido) {
 
     const emoji = generarEmojiAleatorio();
     const msg_body = `${emoji} listo, tu pedido se confirmo con exito`;
-    const message = await WhatsApp.sendText(undefined, pedido.body.phone, msg_body);
+    const message = await WhatsApp.sendText({ from: pedido.body.phone, msg_body });
 
     const emoji2 = generarEmojiAleatorio();
     const msg_body2 = `${emoji} Puedes hacer seguimiento de tu pedido por medio de este enlace `;
     const button = `${URL_WEBHOOK_CONFIRMACION}/miPedido?idPedido=${pedido.body.id}`
-    const message2 = await WhatsApp.sendText(undefined, pedido.body.phone, msg_body2, button);
+    const message2 = await WhatsApp.sendText({ from: pedido.body.phone, msg_body: msg_body2 });
     const message3Url = await WhatsApp.sendUrlPreview({ from: pedido.body.phone, msg_body2, urlMessage: button })
 
 }

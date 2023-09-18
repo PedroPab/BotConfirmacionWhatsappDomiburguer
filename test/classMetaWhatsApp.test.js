@@ -12,7 +12,7 @@ describe('MetaWhatsApp', () => {
 
     describe('sendText', () => {
         it('debería enviar un mensaje de texto', async () => {
-            const response = await metaWhatsApp.sendText(undefined, phoneTest, 'Hola mundo mensage del test 1');
+            const response = await metaWhatsApp.sendText({ from: phoneTest, msg_body: 'Hola mundo mensage del test 1' });
             expect(response).to.have.property('messaging_product').to.equal('whatsapp');
             expect(response.contacts[0]).to.have.property('input')
             expect(response.contacts[0]).to.have.property('wa_id')
@@ -36,7 +36,7 @@ describe('MetaWhatsApp', () => {
 
     describe('sendTextButton', () => {
         it('debería enviar un mensaje de texto con botón', async () => {
-            const response = await metaWhatsApp.sendTextButton(undefined, phoneTest, 'Mensaje con botón', 'accion');
+            const response = await metaWhatsApp.sendTextButton({ from: phoneTest, msg_body: 'Mensaje con botón', actionButton: 'accion' });
             expect(response).to.have.property('messaging_product').to.equal('whatsapp');
             expect(response.contacts[0]).to.have.property('input')
             expect(response.contacts[0]).to.have.property('wa_id')
