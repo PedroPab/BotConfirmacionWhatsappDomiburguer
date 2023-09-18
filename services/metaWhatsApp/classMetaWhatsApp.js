@@ -38,9 +38,9 @@ class MetaWhatsApp {
         }
     }
 
-    async sendTemplateConfirmacion({phone_number_id = this.phone_number_id, from, text1}) {
+    async sendTemplateConfirmacion({ phone_number_id = this.phone_number_id, from, text1 }) {
         try {
-            console.log(`[sendText]  phone_number_id ${phone_number_id} from ${from} text ${text1}`);
+            console.log(`[sendTemplateConfirmacion]  phone_number_id ${phone_number_id} from ${from} text ${text1}`);
             const body = {
                 "messaging_product": "whatsapp",
                 "recipient_type": "individual",
@@ -81,6 +81,98 @@ class MetaWhatsApp {
             throw error
         }
     }
+    async sendTextButton(phone_number_id = this.phone_number_id, from, msg_body, actionButton) {
+        try {
+            console.log(`[sendTextButton]  phone_number_id ${phone_number_id} from ${from} text ${msg_body}`);
+            const url = `${this.URL_API}/${phone_number_id}/messages`;
+            const options = {
+                method: "POST",
+                headers: {
+                    Authorization: `Bearer ${this.token}`,
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    messaging_product: "whatsapp",
+                    to: from,
+                    text: { body: msg_body },
+                    wa_action: actionButton,
+                }),
+            };
+            const res = await fetch(url, options);
+            const data = await res.json();
+
+            return data;
+        } catch (error) {
+            throw error;
+        }
+    }
+    async sendContac({ phone_number_id = this.phone_number_id, from }) {
+        try {
+            console.log(`[sendContac]  phone_number_id ${phone_number_id} from ${from}`);
+            const url = `${this.URL_API}/${phone_number_id}/messages`;
+            const options = {
+                method: "POST",
+                headers: {
+                    Authorization: `Bearer ${this.token}`,
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    messaging_product: "whatsapp",
+                    to: from,
+                    type: "contacts",
+                    contacts: [
+                        {
+                            name: {
+                                "formatted_name": "Domiburguer",
+                                "first_name": "Domiburguer"
+                            },
+                            phones: [
+                                {
+                                    "phone": "+573506186772",
+                                    "type": "WORK",
+                                    "wa_id": "573506186772"
+                                }
+                            ]
+                        }
+                    ]
+                }),
+            };
+            const res = await fetch(url, options);
+            const data = await res.json();
+
+            return data;
+        } catch (error) {
+            throw error;
+        }
+    }
+    async sendUrlPreview({ phone_number_id = this.phone_number_id, from , urlMessage}) {
+        try {
+            console.log(`[sendUrlPreview]  phone_number_id ${phone_number_id} from ${from} urlMessage ${urlMessage}`);
+            const url = `${this.URL_API}/${phone_number_id}/messages`;
+            const options = {
+                method: "POST",
+                headers: {
+                    Authorization: `Bearer ${this.token}`,
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    messaging_product: "whatsapp",
+                    to: from,
+                    "text": {
+                        "preview_url": true,
+                        "body": urlMessage
+                    }
+                }),
+            };
+            const res = await fetch(url, options);
+            const data = await res.json();
+
+            return data;
+        } catch (error) {
+            throw error;
+        }
+    }
+
 
 }
 

@@ -1,3 +1,4 @@
+const { URL_WEBHOOK_CONFIRMACION } = require("../../network/confDotenv");
 const generarEmojiAleatorio = require("../../network/utils/emogisRandom");
 const consultarPedidoIdButton = require("../../network/utils/pedidoConfirmado");
 const MetaWhatsApp = require("./classMetaWhatsApp");
@@ -46,9 +47,10 @@ const messageDefault = async (body) => {
         let phone_number_id = body.entry[0].changes[0].value.metadata.phone_number_id;
         let from = body.entry[0].changes[0].value.messages[0].from; // extract the phone number from the webhook payload
         const emoji = generarEmojiAleatorio()
-        const msg_body = `${emoji} Este chat es solo para confirmar el pedido. \n Si deseas hablar con alguien puedes hacerlo por este otro chat +57 350 6186772`
+        const msg_body = `${emoji} Este chat es solo para confirmar el pedido. \n Si deseas hablar con alguien puedes hacerlo por este otro chat`
 
         const rta = await WhatsApp.sendText(phone_number_id, from, msg_body);
+        const messageContac = await WhatsApp.sendContac({ from: from })
         return rta
 
     } catch (error) {
@@ -121,8 +123,7 @@ const madarRespuestaConfirmaicon = async (body) => {
         const pedido = await consultarPedidoIdButton(idButtonContext)
 
         //mandamos mensaje de listo 
-        const msg_body = `listo tu pedido se confirmo con exito, ${pedido.body.id}`
-        const message = await WhatsApp.sendText(undefined, pedido.body.phone, msg_body);
+        await mandarMensageListo(pedido);
 
         return
 
@@ -131,7 +132,20 @@ const madarRespuestaConfirmaicon = async (body) => {
     }
 }
 
+async function mandarMensageListo(pedido) {
+    console.log(`mandando mensage de confirmacion lista`)
 
+    const emoji = generarEmojiAleatorio();
+    const msg_body = `${emoji} listo, tu pedido se confirmo con exito`;
+    const message = await WhatsApp.sendText(undefined, pedido.body.phone, msg_body);
+
+    const emoji2 = generarEmojiAleatorio();
+    const msg_body2 = `${emoji} Puedes hacer seguimiento de tu pedido por medio de este enlace `;
+    const button = `${URL_WEBHOOK_CONFIRMACION}/miPedido?idPedido=${pedido.body.id}`
+    const message2 = await WhatsApp.sendText(undefined, pedido.body.phone, msg_body2, button);
+    const message3Url = await WhatsApp.sendUrlPreview({ from: pedido.body.phone, msg_body2, urlMessage: button })
+
+}
 
 
 const gestionarEntradaDeMensages = async (body) => {
@@ -181,3 +195,4 @@ module.exports = {
     eviarPlantillaConfirmacion,
     gestionarEntradaDeMensages,
 }
+
