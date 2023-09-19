@@ -124,6 +124,9 @@ const madarRespuestaConfirmaicon = async (body) => {
         //mandamos mensaje de listo 
         await mandarMensageListo(pedido);
 
+        await mandarMensageTransferencia(pedido);
+
+
         return
 
     } catch (error) {
@@ -148,6 +151,32 @@ async function mandarMensageListo(pedido) {
         const button = `${URL_WEBHOOK_CONFIRMACION}/miPedido?idPedido=${pedido.body.id}`
         const message2 = await WhatsApp.sendText({ from: pedido.body.phone, msg_body: msg_body2 });
         const message3Url = await WhatsApp.sendUrlPreview({ from: pedido.body.phone, msg_body2, urlMessage: button })
+
+    } catch (error) {
+        throw error
+    }
+}
+
+async function mandarMensageTransferencia(pedido) {
+    try {
+        if (pedido.body.fee !== `Transferencia`) return false
+        const from = pedido.body.phone
+
+        const msg_bodyCuentasB = `Nuestras cuentas son :
+        💸Nequi:  300 6740076
+        
+        💸Bancolombia ahorros:  01897898027`
+
+
+        const messageCuentas = await WhatsApp.sendText({ from, msg_body: msg_bodyCuentasB });
+        const fotoQr = await WhatsApp.sendMediaQr({ from: from })
+
+        const enviarAlChat = `El comprobante de la transferencia la envías a este chat`
+        const message2 = await WhatsApp.sendText({ from, msg_body: enviarAlChat });
+        const messageContac = await WhatsApp.sendContac({ from: from })
+
+
+        return true
 
     } catch (error) {
         throw error
@@ -212,6 +241,7 @@ module.exports = {
     messageDefault,
     isMessageValid,
     isButtonValid,
+    mandarMensageTransferencia,
     recoletDataButtonConfirmar,
     eviarPlantillaConfirmacion,
     mandarMensageApi,

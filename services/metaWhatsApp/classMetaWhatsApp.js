@@ -13,7 +13,7 @@ class MetaWhatsApp {
 
     }
 
-    async sendText({phone_number_id = this.phone_number_id, from, msg_body}) {
+    async sendText({ phone_number_id = this.phone_number_id, from, msg_body }) {
         try {
             console.log(`[sendText]  phone_number_id ${phone_number_id} from ${from} text ${msg_body}`);
             const url = `${this.URL_API}/${phone_number_id}/messages`
@@ -31,6 +31,8 @@ class MetaWhatsApp {
             }
             const res = await fetch(url, options);
             const data = await res.json()
+
+            if(res.status == '400') throw data
 
             return data
         } catch (error) {
@@ -81,7 +83,7 @@ class MetaWhatsApp {
             throw error
         }
     }
-    async sendTextButton({phone_number_id = this.phone_number_id, from, msg_body, actionButton}) {
+    async sendTextButton({ phone_number_id = this.phone_number_id, from, msg_body, actionButton }) {
         try {
             console.log(`[sendTextButton]  phone_number_id ${phone_number_id} from ${from} text ${msg_body}`);
             const url = `${this.URL_API}/${phone_number_id}/messages`;
@@ -145,7 +147,7 @@ class MetaWhatsApp {
             throw error;
         }
     }
-    async sendUrlPreview({ phone_number_id = this.phone_number_id, from , urlMessage}) {
+    async sendUrlPreview({ phone_number_id = this.phone_number_id, from, urlMessage }) {
         try {
             console.log(`[sendUrlPreview]  phone_number_id ${phone_number_id} from ${from} urlMessage ${urlMessage}`);
             const url = `${this.URL_API}/${phone_number_id}/messages`;
@@ -161,6 +163,34 @@ class MetaWhatsApp {
                     "text": {
                         "preview_url": true,
                         "body": urlMessage
+                    }
+                }),
+            };
+            const res = await fetch(url, options);
+            const data = await res.json();
+
+            return data;
+        } catch (error) {
+            throw error;
+        }
+    }
+    async sendMediaQr({ phone_number_id = this.phone_number_id, from }) {
+        try {
+            console.log(`[sendMediaQr] from ${from} `);
+            const url = `${this.URL_API}/${phone_number_id}/messages`;
+            const options = {
+                method: "POST",
+                headers: {
+                    Authorization: `Bearer ${this.token}`,
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    messaging_product: "whatsapp",
+                    to: from,
+                    "recipient_type": "individual",
+                    "type": "image",
+                    "image": {
+                        "id": "286764157438059"
                     }
                 }),
             };

@@ -53,4 +53,14 @@ describe('MetaWhatsApp', () => {
             expect(response.messages[0]).to.have.property('id').to.be.a('string');
         });
     });
+
+    describe('sendMediaQr', () => {
+        it('debería enviar una imagen', async () => {
+            const response = await metaWhatsApp.sendMediaQr({ from: phoneTest });
+            expect(response).to.have.property('messaging_product').to.equal('whatsapp');
+            expect(response.contacts[0]).to.have.property('input')
+            expect(response.contacts[0]).to.have.property('wa_id')
+            expect(response.messages[0]).to.have.property('id').to.be.a('string');
+        });
+    });
 });
