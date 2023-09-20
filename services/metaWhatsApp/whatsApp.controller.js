@@ -197,6 +197,20 @@ async function mandarMensageApi({ phone, text }) {
     }
 }
 
+async function mandarMensageApiDespacho({ phone, text }) {
+    try {
+        console.log(`mandando mensage de mandarMensageApiDespacho`)
+
+        const msg_body = `${text}`;
+
+        const message = await WhatsApp.sendTemplateDespachado({ from: phone, text1: msg_body });
+
+        return message
+    } catch (error) {
+        throw Boom.badRequest(`no se pudo mandar el mandarMensageApiDespacho`)
+    }
+}
+
 
 
 const gestionarEntradaDeMensages = async (body) => {
@@ -245,6 +259,7 @@ module.exports = {
     recoletDataButtonConfirmar,
     eviarPlantillaConfirmacion,
     mandarMensageApi,
+    mandarMensageApiDespacho,
     gestionarEntradaDeMensages,
 }
 

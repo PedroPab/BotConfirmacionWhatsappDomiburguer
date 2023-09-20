@@ -55,7 +55,6 @@ routes.post(`/mandarMensage`, async (req, res, next) => {
         console.log("phone, text", phone, text)
 
         const envioPlantilla = await controlleW.mandarMensageApi({ phone, text })
-        console.log("🚀 ~ file: rutas.js:63 ~ routes.post ~ envioPlantilla:", envioPlantilla)
 
         res.json({ body: envioPlantilla })
 
@@ -65,5 +64,19 @@ routes.post(`/mandarMensage`, async (req, res, next) => {
     }
 });
 
+routes.post(`/mandarMensageDespacho`, async (req, res, next) => {
+    try {
+        let { phone, text } = req.body;
+        console.log("phone, text", phone, text)
+
+        const envioPlantilla = await controlleW.mandarMensageApiDespacho({ phone, text })
+
+        res.json({ body: envioPlantilla })
+
+    } catch (error) {
+        console.error(error);
+        next(error)
+    }
+});
 
 module.exports = routes

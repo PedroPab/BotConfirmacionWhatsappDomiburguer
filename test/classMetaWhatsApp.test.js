@@ -2,6 +2,10 @@ const { expect } = require('chai');
 const MetaWhatsApp = require('./../services/metaWhatsApp/classMetaWhatsApp'); // Asegúrate de proporcionar la ruta correcta
 
 describe('MetaWhatsApp', () => {
+    /**
+     * 
+     * @type {MetaWhatsApp}
+     */
     let metaWhatsApp;
     let phoneTest = `573054489598`
 
@@ -24,6 +28,32 @@ describe('MetaWhatsApp', () => {
     describe('sendTemplateConfirmacion', () => {
         it('debería enviar una plantilla de confirmación', async () => {
             const response = await metaWhatsApp.sendTemplateConfirmacion({
+                from: phoneTest,
+                text1: 'Parametro de la plantilla de confirmaicon'
+            });
+            expect(response).to.have.property('messaging_product').to.equal('whatsapp');
+            expect(response.contacts[0]).to.have.property('input')
+            expect(response.contacts[0]).to.have.property('wa_id')
+            expect(response.messages[0]).to.have.property('id').to.be.a('string');
+        });
+    });
+
+    describe('sendTemplateTest', () => {
+        it('debería enviar una plantilla de sendTemplateTest', async () => {
+            const response = await metaWhatsApp.sendTemplateTest({
+                from: phoneTest,
+            });
+            expect(response).to.have.property('messaging_product').to.equal('whatsapp');
+            expect(response.contacts[0]).to.have.property('input')
+            expect(response.contacts[0]).to.have.property('wa_id')
+            expect(response.messages[0]).to.have.property('id').to.be.a('string');
+        });
+    });
+
+
+    describe('sendTemplateDespachado', () => {
+        it('debería enviar una plantilla de sendTemplateDespachado', async () => {
+            const response = await metaWhatsApp.sendTemplateDespachado({
                 from: phoneTest,
                 text1: 'Parametro de la plantilla de confirmaicon'
             });

@@ -32,15 +32,14 @@ class MetaWhatsApp {
             const res = await fetch(url, options);
             const data = await res.json()
 
-            if(res.status == '400') throw data
+            if (res.status == '400') throw data
 
             return data
         } catch (error) {
             throw error
         }
     }
-
-    async sendTemplateConfirmacion({ phone_number_id = this.phone_number_id, from, text1 }) {
+    async sendTemplate({ phone_number_id = this.phone_number_id, from, text1, templateName }) {
         try {
             console.log(`[sendTemplateConfirmacion]  phone_number_id ${phone_number_id} from ${from} text ${text1}`);
             const body = {
@@ -49,23 +48,28 @@ class MetaWhatsApp {
                 "to": from,
                 "type": "template",
                 "template": {
-                    "name": "confirmarcion_pedido",
+                    "name": templateName,
                     "language": {
                         "code": "es"
-                    },
-                    "components": [
-                        {
-                            "type": "body",
-                            "parameters": [
-                                {
-                                    "type": "text",
-                                    "text": text1,
-                                }
-                            ]
-                        }
-                    ]
+                    }
                 }
             }
+            //si tiene un parametro de texto, osea una variable , lo ponesmo 
+            if (text1) {
+                body.template.components = [
+                    {
+                        "type": "body",
+                        "parameters": [
+                            {
+                                "type": "text",
+                                "text": text1,
+                            }
+                        ]
+                    }
+                ]
+            }
+            console.log(`body`, JSON.stringify(body))
+
             const url = `${this.URL_API}/${phone_number_id}/messages`
             const options = {
                 method: "POST",
@@ -79,6 +83,27 @@ class MetaWhatsApp {
             const data = await res.json()
 
             return data
+        } catch (error) {
+            throw error
+        }
+    }
+    async sendTemplateConfirmacion({ phone_number_id = this.phone_number_id, from, text1 }) {
+        try {
+            return await this.sendTemplate({ phone_number_id, from, text1, templateName: `confirmarcion_pedido` })
+        } catch (error) {
+            throw error
+        }
+    }
+    async sendTemplateTest({ phone_number_id = this.phone_number_id, from, text1 }) {
+        try {
+            return await this.sendTemplate({ phone_number_id, from, templateName: `plantilla_de_test` })
+        } catch (error) {
+            throw error
+        }
+    }
+    async sendTemplateDespachado({ phone_number_id = this.phone_number_id, from, text1 }) {
+        try {
+            return await this.sendTemplate({ phone_number_id, from, text1, templateName: `pedido_despachado` })
         } catch (error) {
             throw error
         }
