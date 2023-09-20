@@ -89,7 +89,7 @@ class MetaWhatsApp {
     }
     async sendTemplateConfirmacion({ phone_number_id = this.phone_number_id, from, text1 }) {
         try {
-            return await this.sendTemplate({ phone_number_id, from, text1, templateName: `confirmarcion_pedido` })
+            return await this.sendTemplate({ phone_number_id, from, text1, templateName: `confirmacion_pedido_sin_variable` })
         } catch (error) {
             throw error
         }
