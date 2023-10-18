@@ -183,7 +183,7 @@ async function mandarMensageTransferencia(pedido) {
     }
 }
 
-async function mandarMensageApi({ phone, text }) {
+async function mandarMensageApi({ phone, text,  }) {
     try {
         console.log(`mandando mensage de mandarMensageApi`)
 

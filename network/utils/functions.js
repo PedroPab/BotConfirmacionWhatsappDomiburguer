@@ -1,26 +1,17 @@
-const express = require('express');
-const controlleW = require('../../../services/metaWhatsApp/whatsApp.controller');
+const controlleW = require('../../services/metaWhatsApp/whatsApp.controller');
 const Boom = require('@hapi/boom');
 
-const routes = express.Router()
-
-routes.get("/webhook", (req, res, next) => {
-    /**
-    * UPDATE YOUR VERIFY TOKEN
-    *This will be the Verify Token value when you set up webhook
-    **/
+const webhookGet = (req, res, next) => {
     try {
-        const rta = controlleW.verifyToken(req, res)
+        const rta = controlleW.verifyToken(req, res, next)
         res.status(200).send(rta);
     } catch (error) {
         next(error)
     }
-});
+};
 
-
-routes.post("/webhook", async (req, res, next) => {
+const webhookPost = async (req, res, next) => {
     try {
-
         let body = req.body;
 
         const rta = await controlleW.gestionarEntradaDeMensages(body)
@@ -31,9 +22,9 @@ routes.post("/webhook", async (req, res, next) => {
         console.error(error);
         next(error)
     }
-});
+};
 
-routes.post(`/plantillaConfirmacion`, async (req, res, next) => {
+const plantillaConfirmacion = async (req, res, next) => {
     try {
         let body = req.body;
         console.log("body", body)
@@ -47,9 +38,9 @@ routes.post(`/plantillaConfirmacion`, async (req, res, next) => {
         console.error(error);
         next(error)
     }
-});
+};
 
-routes.post(`/mandarMensage`, async (req, res, next) => {
+const mandarMensaje = async (req, res, next) => {
     try {
         let { phone, text } = req.body;
         console.log("phone, text", phone, text)
@@ -62,9 +53,9 @@ routes.post(`/mandarMensage`, async (req, res, next) => {
         console.error(error);
         next(error)
     }
-});
+};
 
-routes.post(`/mandarMensageDespacho`, async (req, res, next) => {
+const mandarMensajeDespacho = async (req, res, next) => {
     try {
         let { phone, text } = req.body;
         console.log("phone, text", phone, text)
@@ -77,6 +68,12 @@ routes.post(`/mandarMensageDespacho`, async (req, res, next) => {
         console.error(error);
         next(error)
     }
-});
+};
 
-module.exports = routes
+module.exports = {
+    webhookGet,
+    webhookPost,
+    plantillaConfirmacion,
+    mandarMensaje,
+    mandarMensajeDespacho,
+}

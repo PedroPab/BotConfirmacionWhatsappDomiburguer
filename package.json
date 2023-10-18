@@ -2,10 +2,10 @@
   "name": "gestorconfirmaciondomiburguer",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
     "dev": " nodemon app.js ",
-    "start": " node app.js ",
+    "start": "functions-framework --target=mandarMensaje",
     "test": "npx mocha test/",
     "echo": "echo $npm_config_arg",
     "deploy": " gcloud beta app deploy --no-cache",
@@ -15,6 +15,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@google-cloud/functions-framework": "^3.3.0",
     "@hapi/boom": "^10.0.1",
     "dotenv": "^16.3.1",
     "express": "^4.18.2"
