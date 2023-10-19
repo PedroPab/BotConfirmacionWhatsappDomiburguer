@@ -2,7 +2,7 @@
   "name": "gestorconfirmaciondomiburguer",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
     "dev": " nodemon app.js ",
     "start": " node app.js ",
@@ -21,6 +21,7 @@
   },
   "devDependencies": {
     "chai": "^4.3.8",
-    "mocha": "^10.2.0"
+    "mocha": "^10.2.0",
+    "nodemon": "^3.0.1"
   }
 }
