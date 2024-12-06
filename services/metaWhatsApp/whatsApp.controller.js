@@ -254,8 +254,8 @@ async function isFlowPlantilla(body) {
     //miramos el tipo de mensaje
     let messageType = body.entry[0].changes[0].value.messages[0].type
     //mirmao si es texto 
-    if (messageType != `text`) return false
-    const text = body.entry[0].changes[0].value.messages[0].text.body
+    if (messageType != `button`) return false
+    const text = body.entry[0].changes[0].value.messages[0].button.text
     //miramos si es un texto de respuesta de una plantilla
     switch (text) {
         case "Siii, Pedir cuentas :)":
