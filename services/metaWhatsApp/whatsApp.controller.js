@@ -60,7 +60,6 @@ const messageDefault = async (body) => {
 
 
 
-
 const isMessageValid = (body) => {
     if (body.object &&
         body.entry &&
@@ -224,7 +223,11 @@ const gestionarEntradaDeMensages = async (body) => {
         }
 
         console.log("body post webhook", JSON.stringify(body, null, 2))
-
+        //miramos si es un texto normal
+        const flow = await isFlowPlantilla(body)
+        if (flow) {
+            return
+        }
 
         //miramos si es un boton  de ruesta
         const isButton = isButtonValid(body)
@@ -246,6 +249,61 @@ const gestionarEntradaDeMensages = async (body) => {
     }
 }
 
+//miramo si es la respuesta de un boton de una plantilla
+async function isFlowPlantilla(body) {
+    //miramos el tipo de mensaje
+    let messageType = body.entry[0].changes[0].value.messages[0].type
+    //mirmao si es texto 
+    if (messageType != `text`) return false
+    const text = body.entry[0].changes[0].value.messages[0].text.body
+    //miramos si es un texto de respuesta de una plantilla
+    switch (text) {
+        case "Siii, Pedir cuentas :)":
+            const phone = body.entry[0].changes[0].value.messages[0].from
+            await sendMessageCuentas({ phone })
+            return true
+        default:
+            return false
+    }
+
+}
+
+const confirmacionCliente = async ({ phone, name, total }) => {
+    try {
+
+        const rta = await WhatsApp.sendTemplateMetodosDePagoPregunta({ from: phone, text1: name, text2: String(total) })
+
+        return rta
+    } catch (error) {
+        throw error
+    }
+}
+
+async function sendMessageCuentas({ phone }) {
+    try {
+        const from = phone
+
+        const msg_bodyCuentasB = `Nuestras cuentas son :
+        💸Nequi:  300 6740076
+        
+        💸Bancolombia ahorros:  01897898027`
+
+
+        const messageCuentas = await WhatsApp.sendText({ from, msg_body: msg_bodyCuentasB });
+        const fotoQr = await WhatsApp.sendMediaQr({ from: from })
+
+        const enviarAlChat = `El comprobante de la transferencia la envías a este chat`
+        const message2 = await WhatsApp.sendText({ from, msg_body: enviarAlChat });
+        const messageContac = await WhatsApp.sendContac({ from: from })
+
+
+        return true
+
+    } catch (error) {
+        throw error
+    }
+}
+
 
 
 
@@ -261,5 +319,6 @@ module.exports = {
     mandarMensageApi,
     mandarMensageApiDespacho,
     gestionarEntradaDeMensages,
+    confirmacionCliente,
 }
 

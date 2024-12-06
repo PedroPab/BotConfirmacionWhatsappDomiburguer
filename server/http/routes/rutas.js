@@ -49,6 +49,21 @@ routes.post(`/plantillaConfirmacion`, async (req, res, next) => {
     }
 });
 
+routes.post(`/confirmacionCliente`, async (req, res, next) => {
+    try {
+        let body = req.body;
+        const { phone, total, name } = body
+
+        const envioPlantilla = await controlleW.confirmacionCliente({ phone, name, total })
+
+        res.json({ message: envioPlantilla })
+
+    } catch (error) {
+        console.error(error);
+        next(error)
+    }
+});
+
 routes.post(`/mandarMensage`, async (req, res, next) => {
     try {
         let { phone, text } = req.body;
